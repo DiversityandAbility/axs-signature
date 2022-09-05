@@ -7,6 +7,7 @@
 #     - "$PUBLISH"
 #   volume:
 #     - "$VG_APP_DIR:/usr/src/app"
+#     - "$VG_APP_DIR/data:/data"
 # environment:
 #   - "PUBLISH=5000"
 # ---
