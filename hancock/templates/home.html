@@ -1,24 +1,38 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
-<p>Hancock is an open source service that makes it easy for you to request signatures from your users.</p>
-<p>It's designed to be easy to use (for you and your users); accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>
-<h2>Try it!</h2>
-<p>Fill in this form to create a "signature session", hopefully it's simple enough to just start using, but if you want to learn more, <a href="/docs/">read our documentation</a>.</p>
-<form action="{{ url_for('hancock.create_session') }}" method="POST" target="_blank" rel="opener">
-    <label for="api-key">API Key</label>
-    <input type="password" id="api-key" name="api_key" value="123" required>
+<i class="fa-thin fa-4x fa-signature text-gray-200 mx-auto p-2"></i> 
+<h1 class="font-bold text-xl pb-4 uppercase">Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
+<div class="py-4">
+    <p class="p-2 text-sm md:text-md">Hancock is an open source service that makes it easy for you to request signatures from your users.</p>
+    <p class="p-2 text-sm md:text-md">It's designed to be easy to use (for you and your users); accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>    
+</div>
 
-    <label for="redirect-uri">Redirect URI</label>
-    <input type="url" id="redirect-uri" name="redirect_uri" value="{{ request.url }}" required >
+<div class="p-6 my-4 border-4 rounded-lg">
 
-    <label for="signee-email">Signee Email</label>
-    <input type="email" id="signee-email" name="signee_email" required >
+    <h2 class="p-2 text-sm md:text-lg font-bold">Try it!</h2>
+    <p class="p-2 text-sm md:text-md">Fill in this form to create a "signature session", hopefully it's simple enough to just start using, but if you want to learn more, <a href="/docs/" class="font-semibold text-hyperlinkcolour hover:text-sky-600 hover:shadow-xl underline">read our documentation</a>.</p>
+    <form action="{{ url_for('hancock.create_session') }}" class="block" method="POST" target="_blank" rel="opener">
+        <div class="block p-2 my-4">
+            <label for="api-key" class="block font-bold uppercase">API Key:</label>
+            <input type="password" id="api-key" name="api_key" value="123" class="focus:shadow-outline w-[70%] appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required>
+        </div> 
+        <div class="block p-2 my-4">
+            <label for="redirect-uri" class="block font-bold uppercase">Redirect URI:</label>
+            <input type="url" id="redirect-uri" name="redirect_uri" value="{{ request.url }}" class="w-full focus:shadow-xl focus:border-blue-500 w-[70%] appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" required >
+        </div>   
+        <div class="block p-2 my-4">
+            <label for="declaration" class="block font-bold uppercase">Declaration:</label>
+            <textarea name="declaration" id="declaration" cols="60" rows="4" placeholder="e.g. I, the undersigned, think that Hancock is a fantastic tool!" class="w-full focus:shadow-outline w-[70%] appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" required></textarea>
+        </div>
+        <div class="block p-3 my-4 border-4 border-slate">
+            <label for="signee-email" class="block font-bold uppercase">Signee Email:</label>
+            <input type="email" id="signee-email" name="signee_email" class="w-full focus:shadow-outline w-[70%] appearance-none rounded border py-2 px-3 mb-1 leading-tight text-gray-700 shadow focus:outline-none" required >
 
-    <label for="declaration">Declaration</label>
-    <textarea name="declaration" id="declaration" cols="30" rows="10" placeholder="e.g. I, the undersigned, think that Hancock is a fantastic tool!" required></textarea>
-
-    <input type="submit" value="Sign Here">
-</form>
+        </div>
+        <div class="flex justify-center py-2">
+            <input type="submit" value="Sign Here" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">
+        </div>  
+    </form>
+</div>
 {% endblock %}
