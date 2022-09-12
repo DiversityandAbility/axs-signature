@@ -4,32 +4,36 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://kit.fontawesome.com/4e575ce405.js" crossorigin="anonymous"></script>
         <script>
             tailwind.config = {
                 theme: {
                     extend: {
-                        colors: {}
+                        colors: {
+                            hyperlinkcolour: '#00D1FF',
+                            textcolour: '#484848',
+                            backgroundcolour: '#F0F0F0'
+                        }
                     }
                 }
             }
         </script>
         <style type="text/tailwindcss">
             @layer utilities {
+                body {
+                    @apply text-textcolour;
+                }
                 a {
                     @apply text-lime-700;
                 }
             }
         </style>
     </head>
-    <body class="bg-blue-100">
-        <div class="relative flex justify-center overflow-hidden bg-gray-50 sm:py-12">
-            <div class="bg-blue-200">
-                <div class="relative bg-gray-100 px-2 pt-10 pb-8 md:mx-8 my-8 shadow-xl sm:mx-auto max-w-2xl sm:rounded-lg sm:px-10">
-                    <div class="mx-auto max-w-2xl">
-                        {% block body %}{% endblock %}
-                    </div>
+    <body class="bg-sky-100">
+             <div class="bg-backgroundcolour px-2 pt-10 pb-8 my-8 shadow-2xl mx-auto w-[600px] sm:rounded-lg sm:px-10">
+                <div class="">
+                    {% block body %}{% endblock %}
                 </div>
             </div>
-        </div>
     </body>
 </html>
