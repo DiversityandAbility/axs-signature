@@ -17,6 +17,8 @@ from hancock.schema import CreateSessionSchema
 # TODO: Turn off CORS for the create session route
 # TODO: Show session ID to user on sign page and on creator's page alongside loading indicator
 # TODO: Redirect URI should always be accessible to user, and can be used to verify the signature request (rel=nooperner)
+# TODO: Add a "title" field to go next to the declaration
+# TODO: Time limited API keys, connected to the signee_email, use once?
 
 
 bp = Blueprint("hancock", __name__)
@@ -47,6 +49,7 @@ def create_session():
     sid = make_sid(input)
     with open(f"/data/signatures/{sid}.json", "w") as fp:
         json.dump(input, fp)
+    # TODO: Send an email with this link to the signee, don't auto-redirect
     return redirect(url_for("hancock.sign", sid=sid))
 
 
