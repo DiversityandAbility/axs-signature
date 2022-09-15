@@ -4,34 +4,34 @@
 <h1 class="font-bold text-2xl md:text-xl py-4 uppercase">Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
 <i class="fa-thin fa-4x fa-signature block mx-auto p-4" ></i>
 <div class="py-4">
-    <p class="p-2 text-lg md:text-md">Hancock is an open source service that makes it easy for you to request signatures from your users.</p>
-    <p class="p-2 text-lg md:text-md">It's designed to be easy to use (for you and your users); accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>    
+    <p class="p-2 text-lg md:text-base">Hancock is an open source service that makes it easy for you to request signatures from your users.</p>
+    <p class="p-2 text-lg md:text-base">It's designed to be easy to use (for you and your users); accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>    
 </div>
 
 <div class="p-4 md:p-6 my-4 border-4 rounded-lg">
 
     <h2 class="p-2 text-2xl md:text-lg font-bold">Try it!</h2>
-    <p class="p-2 text-lg md:text-md">Fill in this form to create a "signature session", hopefully it's simple enough to just start using, but if you want to learn more, <a href="/docs/" class="font-semibold text-hyperlinkcolour hover:text-sky-600 hover:shadow-xl underline">read our documentation</a>.</p>
+    <p class="p-2 text-lg md:text-base">Fill in this form to create a "signature session", hopefully it's simple enough to just start using, but if you want to learn more, <a href="/docs/" class="font-semibold text-hyperlinkcolour hover:text-sky-600 hover:shadow-xl underline">read our documentation</a>.</p>
     <form action="{{ url_for('hancock.create_session') }}" class="block" method="POST" target="_blank" rel="opener">
         <div class="block p-2 my-4">
-            <label for="api-key" class="block font-bold uppercase text-xl md:text-md">API Key:</label>
-            <input type="password" id="api-key" name="api_key" value="123" class="focus:shadow-xl sm:h-12 h-24 text-2xl md:text-md md:h-14 focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required>
+            <label for="api-key" class="block font-bold uppercase text-xl md:text-base">API Key:</label>
+            <input type="password" id="api-key" name="api_key" value="123" class="focus:shadow-xl sm:h-12 h-24 text-2xl md:text-base md:h-14 focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required>
         </div> 
         <div class="block p-2 my-4">
-            <label for="redirect-uri" class="block font-bold uppercase text-xl md:text-md">Redirect URI:</label>
-            <input type="url" id="redirect-uri" name="redirect_uri" value="{{ request.url }}" class="focus:shadow-xl sm:h-12 h-24 text-2xl md:text-md md:h-14 focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required >
+            <label for="redirect-uri" class="block font-bold uppercase text-xl md:text-base">Redirect URI:</label>
+            <input type="url" id="redirect-uri" name="redirect_uri" value="{{ request.url }}" class="focus:shadow-xl sm:h-12 h-24 text-2xl md:text-base md:h-14 focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required >
         </div>   
         <div class="block p-2 my-4">
-            <label for="declaration" class="block font-bold uppercase text-xl md:text-md">Declaration:</label>
-            <textarea name="declaration" id="declaration" cols="60" rows="4" placeholder="e.g. I, the undersigned, think that Hancock is a fantastic tool!" class="focus:shadow-xl text-2xl md:text-md focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required></textarea>
+            <label for="declaration" class="block font-bold uppercase text-xl md:text-base">Declaration:</label>
+            <textarea name="declaration" id="declaration" cols="60" rows="4" placeholder="e.g. I, the undersigned, think that Hancock is a fantastic tool!" class="focus:shadow-xl text-2xl md:text-base focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required></textarea>
         </div>
         <div class="block p-3 my-4 border-4 border-slate">
-            <label for="signee-email" class="block font-bold uppercase text-xl md:text-md">Signee Email:</label>
-            <input type="email" id="signee-email" name="signee_email" class="focus:shadow-xl sm:h-12 h-24 text-2xl md:text-md md:h-14 focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required >
+            <label for="signee-email" class="block font-bold uppercase text-xl md:text-base">Signee Email:</label>
+            <input type="email" id="signee-email" name="signee_email" class="focus:shadow-xl sm:h-12 h-24 text-2xl md:text-base md:h-14 focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required >
 
         </div>
         <div class="flex justify-center py-2">
-            <input type="submit" value="Sign Here" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase text-xl md:text-md">
+            <input type="submit" value="Sign Here" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase text-xl md:text-base">
         </div>  
     </form>
 </div>
