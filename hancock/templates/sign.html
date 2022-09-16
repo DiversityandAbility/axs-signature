@@ -20,14 +20,16 @@
       <div class="p-4 my-4 border-4 bg-gray-100 block rounded-lg">
         <form>
           <label class="font-bold block mb-2">Type in the textbox below to add your signature</label>
-          <input class="focus:shadow-outline appearance-none w-full h-14 rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder=" e.g. John Smith" id="name" />
+          <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder=" e.g. John Smith" id="name" />
         </form>
+        <p class="text-left pt-6">Signature Preview below:</p>
         <div id="signature" class="bg-white w-[80%] mx-auto mt-4 p-4"></div>
+        <div class="p-8"> 
+          <button type="submit" id="user-signature" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
+        </div>
       </div>
     </div>
-    <div> 
-      <button type="submit" id="user-signature" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
-    </div>
+
   </div>
 </div>
 
