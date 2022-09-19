@@ -23,7 +23,7 @@
           <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder=" e.g. John Smith" id="name" />
         </form>
         <p class="text-left pt-6">Signature Preview below:</p>
-        <div id="signature" class="bg-white w-[80%] mx-auto mt-4 p-4"></div>
+        <div id="signature" class="mt-4"></div>
         <div class="p-8"> 
           <button type="submit" id="user-signature" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
         </div>
@@ -39,38 +39,41 @@
       var draw = SVG().addTo('#signature').size(300, 100);
 
       var text = draw.text(function(add) {
-        add.tspan( input.value );
+        add.tspan(input.value);
       })
-      text.move(0, 0).font({ })
+      text.move(0, 0).font({ });
       text.center(draw.width()/2, draw.height()*0.6);
 
-    text.font({
-      family:   'Cursive',
-      size:     28, 
-      anchor:   'middle',
-      leading:  '1.5em'
-    })
-
-      var datetime = draw.text(function(add) {
-        // TODO: Get this time to update, it should reflect the time the user presses submit, not the time they opened the page
-        // so auto-update the date in the image. Don't update it every second, or show seconds to the user, that would make it seem like
-        // there's a time pressure to sign.
-        add.tspan( new Date().toISOString() );
+      text.font({
+        family:   'Cursive',
+        size:     28, 
+        anchor:   'middle',
+        leading:  '1.5em'
       });
-      datetime.move(0, 0).font({ "font-size": "smaller",
-      "fill": "#484848" });
 
-      var hash = draw.text(function(add) {
-        add.tspan("{{ sid }}");
-      });
-      hash.move(0, 80).font({ "font-size": "smaller",
-      "fill": "#484848" });
-      hash.fill(50);
-      input.addEventListener('keyup', updateText)
+      input.addEventListener('keyup', updateText);
       function updateText() {
           text.clear();
           text.plain(input.value);
       }
+
+      var datetime = draw.text(function(add) {
+        add.tspan(new Date().toLocaleString());
+      });
+      datetime.move(0, 0).font({ "font-size": "smaller", "fill": "#484848" });
+      
+      function updateDatetime() {
+        datetime.clear();
+        datetime.plain(new Date().toLocaleString());
+      }
+      updateDatetime();
+      setInterval(updateDatetime, 1000);
+
+      var hash = draw.text(function(add) {
+        add.tspan("{{ sid }}");
+      });
+      hash.move(0, 80).font({ "font-size": "smaller", "fill": "#484848" });
+      hash.fill(50);
     })();
   </script>
 

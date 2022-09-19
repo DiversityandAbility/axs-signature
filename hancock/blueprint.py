@@ -71,7 +71,6 @@ def sign(sid):
 
 @bp.route("/session/<uuid:sid>/close/", methods=["GET"])
 def session_close(sid):
-    # TODO: Can we force the browser to open the opener tab when we close the child?
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
     return render_template("close.html", redirect_uri=details["redirect_uri"])
