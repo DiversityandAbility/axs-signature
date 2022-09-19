@@ -42,7 +42,7 @@
       let input = document.querySelector('#name');
       let draw = SVG().addTo('#signature').size(300, 100);
 
-      let style = draw.fontface('calligraffiti', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
+      let fontface = draw.fontface('hancock-cursive', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
 
       let text = draw.text(function(add) {
         add.tspan(input.value);
@@ -51,7 +51,7 @@
       text.center(draw.width()/2, draw.height()*0.6);
 
       text.font({
-        family:   'calligraffiti',
+        family:   'hancock-cursive',
         size:     28, 
         anchor:   'middle',
         leading:  '1.5em'
@@ -83,9 +83,16 @@
 
       let form = document.getElementById("signature-form");
 
-      form.addEventListener("submit", (evt) => {
-        let input = form.querySelector("[name=signature]");
-        input.value = draw.svg();
+      form.addEventListener("submit", async (evt) => {
+        let url = new URL("/subset/", window.location.origin);
+        url.searchParams.append("chars", input.value);
+
+        let resp = await fetch(`/subset/?chars=${input.value}`);
+        let font = await resp.json();
+        
+        fontface.remove();
+        draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
+        form.querySelector("[name=signature]").value = draw.svg();
       });
     })();
   </script>
