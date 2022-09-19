@@ -4,6 +4,7 @@ from pydantic import BaseModel, validator, HttpUrl, EmailStr
 
 class CreateSessionSchema(BaseModel):
     api_key: str
+    title: str
     declaration: str
     signee_email: EmailStr
     redirect_uri: HttpUrl

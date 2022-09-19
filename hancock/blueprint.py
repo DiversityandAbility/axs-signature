@@ -17,7 +17,6 @@ from hancock.schema import CreateSessionSchema
 # TODO: Turn off CORS for the create session route
 # TODO: Show session ID to user on sign page and on creator's page alongside loading indicator
 # TODO: Redirect URI should always be accessible to user, and can be used to verify the signature request (rel=nooperner)
-# TODO: Add a "title" field to go next to the declaration
 # TODO: Time limited API keys, connected to the signee_email, use once?
 
 
