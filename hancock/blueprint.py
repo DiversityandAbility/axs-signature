@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import json
 import tempfile
 import time
@@ -36,8 +37,11 @@ def home():
 
 
 def make_sid(data):
-    # TODO: Hash the declaration and signee_email and make it the ID, then you can compare the signature file with the hash of what was signed for
-    return uuid4()
+    h = hashlib.blake2b(digest_size=16)
+    h.update(data["title"].encode("utf8"))
+    h.update(data["declaration"].encode("utf8"))
+    h.update(data["signee_email"].encode("utf8"))
+    return h.hexdigest()
 
 
 @bp.route("/session/", methods=["POST"])
@@ -70,7 +74,7 @@ def sign(sid):
         with open(f"/data/signatures/{sid}.json", "w") as fp:
             details["signed_on"] = time.time()
             json.dump(details, fp)
-        return redirect(url_for("hancock.session_close", sid=sid))
+        return redirect(url_for("hancock.get_signature", sid=sid))
     return render_template(
         "sign.html",
         sid=sid,
@@ -98,15 +102,15 @@ def get_signature(sid):
     )
 
 
-def get_font(name, subset=None):
+def get_font(name, chars=None):
     path = f"/usr/src/app/data/fonts/{name}.woff2"
 
     bytes_ = None
-    if subset:
+    if chars:
         with tempfile.NamedTemporaryFile() as fp:
-            subset = "".join(sorted(set(subset)))
+            chars = "".join(sorted(set(chars)))
             ft_subset(
-                [path, f"--text={subset}", f"--output-file={fp.name}", "--flavor=woff2"]
+                [path, f"--text={chars}", f"--output-file={fp.name}", "--flavor=woff2"]
             )
             fp.seek(0)
             bytes_ = fp.read()
@@ -117,7 +121,7 @@ def get_font(name, subset=None):
     as_b64 = base64.b64encode(bytes_)
     return {
         "font": name,
-        "subset": subset,
+        "chars": chars,
         "base64": as_b64.decode("utf8").replace("\n", ""),
     }
 
@@ -127,5 +131,5 @@ def subset_font():
     # TODO: Auth this route somehow, so people can't just use it as a subsetting tool
     font_name = request.args.get("font", "calligraffiti")
     font_name = secure_filename(font_name)
-    subset = request.args.get("subset", None)
-    return jsonify(get_font(font_name, subset))
+    chars = request.args.get("chars", None)
+    return jsonify(get_font(font_name, chars))
