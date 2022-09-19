@@ -65,8 +65,8 @@ def sign(sid):
         return redirect(url_for("hancock.get_signature", sid=sid))
     if request.method == "POST":
         # TODO: Check CSRF token
-        with open(f"/data/signatures/{sid}.svg", "wb") as fp:
-            request.files["signature"].save(fp)
+        with open(f"/data/signatures/{sid}.svg", "w") as fp:
+            fp.write(request.form["signature"])
         with open(f"/data/signatures/{sid}.json", "w") as fp:
             details["signed_on"] = time.time()
             json.dump(details, fp)

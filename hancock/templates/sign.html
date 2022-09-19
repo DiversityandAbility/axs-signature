@@ -18,15 +18,19 @@
   <div class="mx-auto text-center">
     <div class=" my-8">
       <div class="p-4 my-4 border-4 bg-gray-100 block rounded-lg">
-        <form>
+        <form id="signature-form" method="POST">
+          <input type="hidden" name="signature" required>
+          
           <label class="font-bold block mb-2">Type in the textbox below to add your signature</label>
-          <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder=" e.g. John Smith" id="name" />
+          <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder="e.g. John Smith" id="name" required />
+          
+          <p class="text-left pt-6">Signature Preview below:</p>
+          <div id="signature" class="mt-4"></div>
+          
+          <div class="p-8"> 
+            <button type="submit" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
+          </div>
         </form>
-        <p class="text-left pt-6">Signature Preview below:</p>
-        <div id="signature" class="mt-4"></div>
-        <div class="p-8"> 
-          <button type="submit" id="user-signature" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
-        </div>
       </div>
     </div>
 
@@ -35,12 +39,12 @@
 
   <script>
     (function() {
-      var input = document.querySelector('#name');
-      var draw = SVG().addTo('#signature').size(300, 100);
+      let input = document.querySelector('#name');
+      let draw = SVG().addTo('#signature').size(300, 100);
 
-      var style = draw.fontface('calligraffiti', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
+      let style = draw.fontface('calligraffiti', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
 
-      var text = draw.text(function(add) {
+      let text = draw.text(function(add) {
         add.tspan(input.value);
       })
       text.move(0, 0);
@@ -59,7 +63,7 @@
           text.plain(input.value);
       }
 
-      var datetime = draw.text(function(add) {
+      let datetime = draw.text(function(add) {
         add.tspan(new Date().toLocaleString());
       });
       datetime.move(0, 0).font({ "font-size": "smaller", "fill": "#484848" });
@@ -71,11 +75,18 @@
       updateDatetime();
       setInterval(updateDatetime, 1000);
 
-      var hash = draw.text(function(add) {
+      let hash = draw.text(function(add) {
         add.tspan("{{ sid }}");
       });
       hash.move(0, 80).font({ "font-size": "smaller", "fill": "#484848" });
       hash.fill(50);
+
+      let form = document.getElementById("signature-form");
+
+      form.addEventListener("submit", (evt) => {
+        let input = form.querySelector("[name=signature]");
+        input.value = draw.svg();
+      });
     })();
   </script>
 
