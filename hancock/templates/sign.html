@@ -38,14 +38,16 @@
       var input = document.querySelector('#name');
       var draw = SVG().addTo('#signature').size(300, 100);
 
+      var style = draw.fontface('calligraffiti', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
+
       var text = draw.text(function(add) {
         add.tspan(input.value);
       })
-      text.move(0, 0).font({ });
+      text.move(0, 0);
       text.center(draw.width()/2, draw.height()*0.6);
 
       text.font({
-        family:   'Cursive',
+        family:   'calligraffiti',
         size:     28, 
         anchor:   'middle',
         leading:  '1.5em'

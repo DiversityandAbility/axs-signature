@@ -1,4 +1,6 @@
+import base64
 import json
+import tempfile
 import time
 from uuid import uuid4
 
@@ -9,7 +11,10 @@ from flask import (
     request,
     url_for,
     send_from_directory,
+    jsonify,
 )
+from fontTools.subset import main as ft_subset
+from werkzeug.utils import secure_filename
 from hancock.schema import CreateSessionSchema
 
 # TODO: Error pages like 404 if the sid is wrong
@@ -66,7 +71,12 @@ def sign(sid):
             details["signed_on"] = time.time()
             json.dump(details, fp)
         return redirect(url_for("hancock.session_close", sid=sid))
-    return render_template("sign.html", sid=sid, details=details)
+    return render_template(
+        "sign.html",
+        sid=sid,
+        details=details,
+        font=get_font("calligraffiti"),
+    )
 
 
 @bp.route("/session/<uuid:sid>/close/", methods=["GET"])
@@ -86,3 +96,36 @@ def get_signature(sid):
         f"{sid}.svg",
         as_attachment=False,
     )
+
+
+def get_font(name, subset=None):
+    path = f"/usr/src/app/data/fonts/{name}.woff2"
+
+    bytes_ = None
+    if subset:
+        with tempfile.NamedTemporaryFile() as fp:
+            subset = "".join(sorted(set(subset)))
+            ft_subset(
+                [path, f"--text={subset}", f"--output-file={fp.name}", "--flavor=woff2"]
+            )
+            fp.seek(0)
+            bytes_ = fp.read()
+    else:
+        with open(path, "rb") as fp:
+            bytes_ = fp.read()
+
+    as_b64 = base64.b64encode(bytes_)
+    return {
+        "font": name,
+        "subset": subset,
+        "base64": as_b64.decode("utf8").replace("\n", ""),
+    }
+
+
+@bp.route("/subset/", methods=["GET"])
+def subset_font():
+    # TODO: Auth this route somehow, so people can't just use it as a subsetting tool
+    font_name = request.args.get("font", "calligraffiti")
+    font_name = secure_filename(font_name)
+    subset = request.args.get("subset", None)
+    return jsonify(get_font(font_name, subset))

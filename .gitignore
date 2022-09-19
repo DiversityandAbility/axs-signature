@@ -1,6 +1,7 @@
 .vantage
 .env
 /data/signatures/*
+/data/fonts/*
 !/**/.gitkeep
 
 # Byte-compiled / optimized / DLL files
