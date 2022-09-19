@@ -1,0 +1,5 @@
+TODO: Write this email template properly
+
+You need to sign this:
+
+{{ url }}

@@ -1,9 +1,8 @@
 from typing import List
-from pydantic import BaseModel, validator, HttpUrl, EmailStr
+from pydantic import BaseModel, HttpUrl, EmailStr
 
 
 class CreateSessionSchema(BaseModel):
-    api_key: str
     title: str
     declaration: str
     signee_email: EmailStr
@@ -16,9 +15,3 @@ class CreateSessionSchema(BaseModel):
         if "methods" in data:
             d["methods"] = data.getlist("methods")
         return d
-
-    @validator("api_key")
-    def check_api_key(cls, v):
-        if v != "123":
-            raise ValueError("Incorrect API Key")
-        return v

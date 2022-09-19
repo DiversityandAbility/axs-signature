@@ -5,38 +5,35 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="font-bold text-2xl md:text-xl py-4 uppercase">Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
-<i class="fa-thin fa-4x fa-signature block mx-auto p-4" ></i>
-<h1 class="text-center text-xl italic">Your Signature is Required</h1>
-<div class="p-6 my-4 border-4 rounded-lg">
-
-
-  <div class="p-4 my-0 border-4 bg-gray-100 block rounded-lg">
-    <h2 class="py-2 font-bold uppercase">{{ details.title }}</h2>
-    <p>{{ details.declaration }}</p>
-    <p class="text-right mt-2"><a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">Read full document</a></p>
-  </div>
-  <div class="mx-auto text-center">
-    <div class=" my-8">
-      <div class="p-4 my-4 border-4 bg-gray-100 block rounded-lg">
-        <form id="signature-form" method="POST">
-          <input type="hidden" name="signature" required>
-          
-          <label class="font-bold block mb-2">Type in the textbox below to add your signature</label>
-          <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder="e.g. John Smith" id="name" required />
-          
-          <p class="text-left pt-6">Signature Preview below:</p>
-          <div id="signature" class="mt-4"></div>
-          
-          <div class="p-8"> 
-            <button type="submit" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
-          </div>
-        </form>
+  <h1 class="font-bold text-2xl md:text-xl py-4 uppercase">Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
+  <i class="fa-thin fa-4x fa-signature block mx-auto p-4" ></i>
+  <h1 class="text-center text-xl italic">Your Signature is Required</h1>
+  <div class="p-6 my-4 border-4 rounded-lg">
+    <div class="p-4 my-0 border-4 bg-gray-100 block rounded-lg">
+      <h2 class="py-2 font-bold uppercase">{{ details.title }}</h2>
+      <p>{{ details.declaration }}</p>
+      <p class="text-right mt-2"><a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">Read full document</a></p>
+    </div>
+    <div class="mx-auto text-center">
+      <div class=" my-8">
+        <div class="p-4 my-4 border-4 bg-gray-100 block rounded-lg">
+          <form id="signature-form" method="POST">
+            <input type="hidden" name="signature" required>
+            
+            <label class="font-bold block mb-2">Type in the textbox below to add your signature</label>
+            <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder="e.g. John Smith" id="name" required />
+            
+            <p class="text-left pt-6">Signature Preview below:</p>
+            <div id="signature" class="mt-4"></div>
+            
+            <div class="p-8"> 
+              <button type="submit" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-
   </div>
-</div>
 
   <script>
     (function() {
@@ -87,12 +84,11 @@
       form.addEventListener("submit", async (evt) => {
         let url = new URL("/subset/", window.location.origin);
         url.searchParams.append("chars", input.value);
-
-        let resp = await fetch(`/subset/?chars=${input.value}`);
+        let resp = await fetch(url);
         let font = await resp.json();
         
         fontface.remove();
-        draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
+        draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.data.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
         form.querySelector("[name=signature]").value = draw.svg();
       });
     })();

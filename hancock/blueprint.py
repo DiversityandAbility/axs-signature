@@ -3,9 +3,9 @@ import hashlib
 import json
 import tempfile
 import time
-from uuid import uuid4
 
 from flask import (
+    abort,
     Blueprint,
     redirect,
     render_template,
@@ -15,6 +15,7 @@ from flask import (
     jsonify,
 )
 from fontTools.subset import main as ft_subset
+from hancock import comms
 from werkzeug.utils import secure_filename
 from hancock.schema import CreateSessionSchema
 
@@ -22,8 +23,6 @@ from hancock.schema import CreateSessionSchema
 # TODO: Error handling, if the form submission is wrong
 # TODO: Turn off CORS for the create session route
 # TODO: Show session ID to user on sign page and on creator's page alongside loading indicator
-# TODO: Redirect URI should always be accessible to user, and can be used to verify the signature request (rel=nooperner)
-# TODO: Time limited API keys, connected to the signee_email, use once?
 
 
 bp = Blueprint("hancock", __name__)
@@ -36,29 +35,40 @@ def home():
     return render_template("home.html")
 
 
-def make_sid(data):
+def make_sid(details):
     h = hashlib.blake2b(digest_size=16)
-    h.update(data["title"].encode("utf8"))
-    h.update(data["declaration"].encode("utf8"))
-    h.update(data["signee_email"].encode("utf8"))
+    h.update(details["title"].encode("utf8"))
+    h.update(details["declaration"].encode("utf8"))
+    h.update(details["signee_email"].encode("utf8"))
     return h.hexdigest()
+
+
+def check_key(key):
+    # TODO: Have an actual DB of API keys
+    # TODO: Time limited API keys, connected to the signee_email, use once?
+    if key != "123":
+        abort(401)
+    return {"name": "Demo Organisation"}
 
 
 @bp.route("/session/", methods=["POST"])
 def create_session():
-    input = request.get_json(silent=True)
-    if not input and request.form:
-        input = CreateSessionSchema.from_form(request.form)
-    input = CreateSessionSchema(**input).dict(exclude={"api_key"})
-    input["created_on"] = time.time()
-    # TODO: Get org name from API key
-    input["created_by"] = "Demo Organisation"
-    input["signed_on"] = None
-    sid = make_sid(input)
+    key = request.headers.get("X-Api-Key")
+    org = check_key(key)
+    details = request.get_json()
+    details = CreateSessionSchema(**details).dict()
+    details["created_on"] = time.time()
+    details["created_by"] = org["name"]
+    details["signed_on"] = None
+    sid = make_sid(details)
     with open(f"/data/signatures/{sid}.json", "w") as fp:
-        json.dump(input, fp)
-    # TODO: Send an email with this link to the signee, don't auto-redirect
-    return redirect(url_for("hancock.sign", sid=sid))
+        json.dump(details, fp)
+    comms.send_email(
+        "signature_requested",
+        details["signee_email"],
+        url=url_for("hancock.sign", sid=sid, _external=True, _scheme="https"),
+    )
+    return jsonify({"status": 201, "data": {"sid": sid}}), 201
 
 
 @bp.route("/session/<sid>/", methods=["GET", "POST"])
@@ -110,7 +120,12 @@ def get_font(name, chars=None):
         with tempfile.NamedTemporaryFile() as fp:
             chars = "".join(sorted(set(chars)))
             ft_subset(
-                [path, f"--text={chars}", f"--output-file={fp.name}", "--flavor=woff2"]
+                [
+                    path,
+                    f"--text={chars}",
+                    f"--output-file={fp.name}",
+                    "--flavor=woff2",
+                ]
             )
             fp.seek(0)
             bytes_ = fp.read()
@@ -132,4 +147,4 @@ def subset_font():
     font_name = request.args.get("font", "calligraffiti")
     font_name = secure_filename(font_name)
     chars = request.args.get("chars", None)
-    return jsonify(get_font(font_name, chars))
+    return jsonify({"status": 200, "data": get_font(font_name, chars)})
