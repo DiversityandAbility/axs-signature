@@ -5,73 +5,89 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="font-bold text-2xl md:text-xl py-4 uppercase">Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
+  <h1 class="font-bold text-2xl md:text-xl py-4 uppercase">Hancock - Simple, Accessible, and Secure Electronic Signatures</h1>
+  <i class="fa-regular fa-2x fa-signature block mx-auto my-4 py-5 px-4 bg-gray-400 border rounded-full" ></i>  
+  <h1 class="text-center text-xl italic">Your Signature is Required</h1>
+    <div class="p-4 md:px-14 mx-8 border-8 border-bordercol bg-textbg block rounded-lg">
+      <h2 class="py-2 font-bold uppercase text-xl">{{ details.title }}</h2>
+      <p class="py-4">{{ details.declaration }}</p>
+      <p class="text-right mt-2"><a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">Read full document</a></p>
 
-<i class="fa-thin fa-4x fa-signature block mx-auto p-4" ></i>
-
-<div class="p-6 my-4 border-4 rounded-lg">
-  <h1 class="text-center text-xl italic py-4">Your Signature is Required</h1>
-
-  <div class="p-4 my-0 border-4 bg-gray-100 block rounded-lg">
-    <h2 class="py-2 font-bold uppercase">Document Title: Draft Agreement</h2>
-    <p class="tracking-wide">{{ details.declaration }}</p>
-  </div>
-  <div class="mx-auto text-center">
-    <div class=" my-8">
-      <div class="p-4 my-4 border-4 bg-gray-100 block rounded-lg">
-        <form>
-          <label class="font-bold block mb-2">Type in the textbox below to add your signature</label>
-          <input class="focus:shadow-outline appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none" type="text" placeholder=" e.g. John Smith" id="name" />
-        </form>
-        <p class="text-left pt-6">Signature Preview below:</p>
-        <div id="signature" class="bg-white w-[80%] mx-auto mt-4 p-4"></div>
-        <div class="p-8"> 
-          <button type="submit" id="user-signature" class="text-white px-6 py-4 bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase">submit</button>
+          <form id="signature-form" method="POST">
+            <input type="hidden" name="signature" required>
+            
+            <label class="font-bold block mb-2">Type in the textbox below to add your signature</label>
+            <input class="focus:shadow-xl appearance-none w-full h-14 text-2xl md:text-base rounded border py-2 px-3 leading-tight text-gray-700 shadow" type="text" placeholder="e.g. John Smith" id="name" required />
+            
+            <p class="text-left pt-6">Signature Preview below:</p>
+            
+            <div id="signature" class=" flex justify-center mx-auto p-2 my-4 w-[100%]"></div>
+            <button type="submit" class="text-white px-6 py-4 my-8 mx-auto bg-hyperlinkcolour border-4 rounded-xl hover:bg-sky-600 shadow-sm hover:shadow-xl font-bold uppercase ">submit</button>
+          </form>
         </div>
       </div>
     </div>
 
-  </div>
-</div>
 
   <script>
     (function() {
-      var input = document.querySelector('#name');
-      var draw = SVG().addTo('#signature').size(300, 100);
+      let input = document.querySelector('#name');
+      let draw = SVG().addTo('#signature').size(350, 120);
 
-      var text = draw.text(function(add) {
-        add.tspan( input.value );
+      draw.center(0,0);
+      let bg_rect = draw.rect(350,100).fill('#ffff');
+      let fontface = draw.fontface('hancock-cursive', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
+
+      let text = draw.text(function(add) {
+        add.tspan(input.value);
       })
-      text.move(0, 0).font({ })
-      text.center(draw.width()/2, draw.height()*0.6);
+      text.move(draw.width/2, draw.height/2);
+      text.center(draw.width()/2, draw.height()*0.5);
 
-    text.font({
-      family:   'Cursive',
-      size:     28, 
-      anchor:   'middle',
-      leading:  '1.5em'
-    })
-
-      var datetime = draw.text(function(add) {
-        // TODO: Get this time to update, it should reflect the time the user presses submit, not the time they opened the page
-        // so auto-update the date in the image. Don't update it every second, or show seconds to the user, that would make it seem like
-        // there's a time pressure to sign.
-        add.tspan( new Date().toISOString() );
+      text.font({
+        family:   'hancock-cursive',
+        size:     28, 
+        anchor:   'middle',
+        leading:  '1.5em'
       });
-      datetime.move(0, 0).font({ "font-size": "smaller",
-      "fill": "#484848" });
 
-      var hash = draw.text(function(add) {
-        add.tspan("{{ sid }}");
-      });
-      hash.move(0, 80).font({ "font-size": "smaller",
-      "fill": "#484848" });
-      hash.fill(50);
-      input.addEventListener('keyup', updateText)
+      input.addEventListener('keyup', updateText);
       function updateText() {
           text.clear();
           text.plain(input.value);
       }
+
+      let datetime = draw.text(function(add) {
+        add.tspan(new Date().toLocaleString());
+      });
+      datetime.move(10, 10).font({ "font-size": "smaller", "fill": "#484848" });
+      
+      function updateDatetime() {
+        datetime.clear();
+        datetime.plain(new Date().toLocaleString());
+      }
+      updateDatetime();
+      setInterval(updateDatetime, 1000);
+
+      let hash = draw.text(function(add) {
+        add.tspan("{{ sid }}");
+      });
+      hash.move(10, 70).font({ "font-size": "smaller", "fill": "#484848" });
+      hash.fill(50);
+
+      let form = document.getElementById("signature-form");
+
+      form.addEventListener("submit", async (evt) => {
+        let url = new URL("/subset/", window.location.origin);
+        url.searchParams.append("chars", input.value);
+        let resp = await fetch(url);
+        let font = await resp.json();
+        
+        fontface.remove();
+        draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.data.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
+        //draw.style('')
+        form.querySelector("[name=signature]").value = draw.svg();
+      });
     })();
   </script>
 

@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Rubik+Dirt&display=swap" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://kit.fontawesome.com/4e575ce405.js" crossorigin="anonymous"></script>
         <script>
@@ -12,12 +14,24 @@
                     extend: {
                         colors: {
                             hyperlinkcolour: '#00D1FF',
-                            textcolour: '#484848',
-                            backgroundcolour: '#F0F0F0'
+                            textcolour: '#1F1F38',
+                            backgroundcolour: '#76739D',
+                            textbg: '#E9EDF0',
+                            desktopbg: '#F8C9C3',
+                            bordercol: '#373554'
                         }
                     }
                 }
+
             }
+            module.exports = {
+                    theme: {
+                        fontFamily: {
+                            'courierprime': ['"Courier Prime"', 'monospace'],
+                            'rubik': ['"Rubik Dirt"', 'cursive']
+                        },
+                    },
+            };
         </script>
         <style type="text/tailwindcss">
             @layer utilities {
@@ -28,14 +42,17 @@
                     @apply text-lime-700;
                 }
                 body {
-                    @apply font-serif;
+                    @apply font-courierprime;
+                }
+                h1{
+                    @apply font-rubik;
                 }
             }
         </style>
         {% block extra_head %}{% endblock %}
     </head>
-    <body class="bg-sky-100">
-             <div class="bg-backgroundcolour px-2 pt-10 pb-8 my-8 shadow-2xl mx-auto w-full md:w-[600px] sm:rounded-lg sm:px-10">
+    <body class="bg-desktopbg">
+             <div class="bg-backgroundcolour px-2 pt-10 pb-8 my-8 border-8 border-bordercol shadow-2xl mx-auto w-full md:w-[800px] sm:rounded-lg sm:px-10">
                 <div class="">
                     {% block body %}{% endblock %}
                 </div>
