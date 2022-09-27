@@ -3,11 +3,10 @@
 {% block body %}
     <script src="{{ url_for('static', filename='hancock.js') }}"></script>
 
-    <div class="py-4">
+    <div class="p-4 md:py-6 md:px-14 my-4 md:mx-8 border-2 md:border-8 border-bordercol bg-textbg rounded-lg">
         <p class="p-2 text-lg md:text-base">Hancock is an open source service that makes it easy for you to request signatures from your users.</p>
         <p class="p-2 text-lg md:text-base">It's designed to be easy to use (for you and your users); accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>    
-    </div>
-    <div class="p-4 md:py-6 md:px-14 my-4 md:mx-8 border-2 md:border-8 border-bordercol bg-textbg rounded-lg">
+    
         <h2 class="p-2 text-2xl md:text-lg font-bold">Try it!</h2>
         <p class="p-2 text-lg md:text-base">Fill in this form to create a "signature session", hopefully it's simple enough to just start using, but if you want to learn more, <a href="/docs/" class="font-semibold text-hyperlinkcolour hover:text-sky-600 hover:shadow-xl underline">read our documentation</a>.</p>
         <form id="request-form">
