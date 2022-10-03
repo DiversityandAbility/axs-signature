@@ -24,8 +24,6 @@ from hancock.schema import CreateSessionSchema
 # TODO: Turn off CORS for the create session route
 # TODO: Show session ID to user on sign page and on creator's page alongside loading indicator
 # TODO: Link emailed to user should contain a hashed key to access the signature, can't rely just on SID (we show the SID to the user in the modal)
-# TODO: Don't show seconds on the signature date time
-# TODO: Add timestamp to the SID
 
 
 bp = Blueprint("hancock", __name__)
@@ -43,6 +41,7 @@ def make_sid(details):
     h.update(details["title"].encode("utf8"))
     h.update(details["declaration"].encode("utf8"))
     h.update(details["signee_email"].encode("utf8"))
+    h.update(str(details["created_on"]).encode("utf8"))
     return h.hexdigest()
 
 
