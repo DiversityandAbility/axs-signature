@@ -1,3 +1,4 @@
+from audioop import cross
 import base64
 import hashlib
 import json
@@ -16,13 +17,13 @@ from flask import (
     jsonify,
 )
 from fontTools.subset import main as ft_subset
+from flask_cors import cross_origin
 from hancock import comms, security
 from werkzeug.utils import secure_filename
 from hancock.schema import CreateSessionSchema
 
 # TODO: Error pages like 404 if the sid is wrong
 # TODO: Error handling, if the form submission is wrong
-# TODO: Turn off CORS for the create session route
 
 
 bp = Blueprint("hancock", __name__)
@@ -53,6 +54,7 @@ def check_key(key):
 
 
 @bp.route("/session/", methods=["POST"])
+@cross_origin()
 def create_session():
     key = request.headers.get("X-Api-Key")
     org = check_key(key)
@@ -129,7 +131,6 @@ def get_signature(sid):
 
 @bp.route("/signature/<sid>.json", methods=["GET"])
 def get_details(sid):
-    # TODO: Also show the declaration and things like that?
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
     details["status"] = "PENDING"
