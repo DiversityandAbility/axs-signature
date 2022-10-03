@@ -127,7 +127,7 @@ def get_details(sid):
 
 
 def get_font(name, chars=None):
-    path = f"/usr/src/app/data/fonts/{name}.woff2"
+    path = f"/data/fonts/{name}.woff2"
 
     bytes_ = None
     if chars:
