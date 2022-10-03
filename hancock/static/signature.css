@@ -1,0 +1,129 @@
+body.axs-modal-open {
+    overflow: hidden;
+}
+.axs-modal-underlay {
+    --axs-underlay-bg-color: rgba(0,0,0,0.3);
+    --axs-modal-bg-color: rgb(233, 237, 240);
+    --axs-modal-border: 8px solid #373554;
+    --axs-modal-border-radius: 5px;
+    --axs-logo-fill-left: #373554;
+    --axs-logo-fill-right: #474AF5;
+    --axs-modal-text-color: #373554;
+}
+.axs-modal-underlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: var(--axs-underlay-bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.axs-modal {
+    background-color: var(--axs-modal-bg-color);
+    border: var(--axs-modal-border);
+    border-radius: var(--axs-modal-border-radius);
+    color: var(--axs-modal-text-color);
+    max-width: 500px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.axs-modal .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+
+.axs-modal-heading {
+    padding: 5px;
+    display: flex;
+    align-items: end;
+    gap: 10px;
+}
+
+.axs-modal-heading h2 {
+    font-size: 2em;
+    line-height: 1em;
+    margin-right: auto;
+}
+
+.axs-modal-heading .axs-modal-close-button {
+    align-self: start;
+}
+
+.axs-modal-heading svg .axs-logo-fill-left {
+    fill: var(--axs-logo-fill-left);
+}
+
+.axs-modal-heading svg .axs-logo-fill-right {
+    fill: var(--axs-logo-fill-right);
+}
+
+.axs-modal-body {
+    padding: 20px 20px 5px 20px;
+    text-align: center;
+}
+
+.axs-modal-body a {
+    color: var(--axs-logo-fill-right);
+}
+
+.axs-modal-body small {
+    font-size: x-small;
+}
+
+.axs-modal-body .smallprint {
+    margin-top: 10px;
+}
+
+.axs-modal-body .session-id {
+    font-family: monospace;
+}
+
+.axs-modal-loading {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.axs-modal-loading div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid var(--axs-modal-text-color);
+    border-radius: 50%;
+    animation: axs-modal-loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: var(--axs-modal-text-color) transparent transparent transparent;
+}
+.axs-modal-loading div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.axs-modal-loading div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.axs-modal-loading div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+@keyframes axs-modal-loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+  

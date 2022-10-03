@@ -23,6 +23,9 @@ from hancock.schema import CreateSessionSchema
 # TODO: Error handling, if the form submission is wrong
 # TODO: Turn off CORS for the create session route
 # TODO: Show session ID to user on sign page and on creator's page alongside loading indicator
+# TODO: Link emailed to user should contain a hashed key to access the signature, can't rely just on SID (we show the SID to the user in the modal)
+# TODO: Don't show seconds on the signature date time
+# TODO: Add timestamp to the SID
 
 
 bp = Blueprint("hancock", __name__)
@@ -76,6 +79,7 @@ def sign(sid):
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
     if details["signed_on"]:
+        # TODO: This needs to redirect to an HTML page that shows the signature.
         return redirect(url_for("hancock.get_signature", sid=sid))
     if request.method == "POST":
         # TODO: Check CSRF token
@@ -93,23 +97,33 @@ def sign(sid):
     )
 
 
-@bp.route("/session/<uuid:sid>/close/", methods=["GET"])
+@bp.route("/session/<sid>/close/", methods=["GET"])
 def session_close(sid):
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
     return render_template("close.html", redirect_uri=details["redirect_uri"])
 
 
-@bp.route("/signature/<uuid:sid>/", methods=["GET"])
+@bp.route("/signature/<sid>.svg", methods=["GET"])
 def get_signature(sid):
     # TODO: verify hash in query string
-    # TODO: Also show the declaration and things like that?
-    # colour signature according to query string params?
+    # TODO: colour signature according to query string params?
     return send_from_directory(
         "/data/signatures/",
         f"{sid}.svg",
         as_attachment=False,
     )
+
+
+@bp.route("/signature/<sid>.json", methods=["GET"])
+def get_details(sid):
+    # TODO: Also show the declaration and things like that?
+    with open(f"/data/signatures/{sid}.json", "r") as fp:
+        details = json.load(fp)
+    details["status"] = "PENDING"
+    if details["signed_on"]:
+        details["status"] = "SIGNED"
+    return jsonify({"data": details})
 
 
 def get_font(name, chars=None):
