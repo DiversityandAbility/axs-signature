@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import json
+import os
 import tempfile
 import time
 
@@ -15,15 +16,13 @@ from flask import (
     jsonify,
 )
 from fontTools.subset import main as ft_subset
-from hancock import comms
+from hancock import comms, security
 from werkzeug.utils import secure_filename
 from hancock.schema import CreateSessionSchema
 
 # TODO: Error pages like 404 if the sid is wrong
 # TODO: Error handling, if the form submission is wrong
 # TODO: Turn off CORS for the create session route
-# TODO: Show session ID to user on sign page and on creator's page alongside loading indicator
-# TODO: Link emailed to user should contain a hashed key to access the signature, can't rely just on SID (we show the SID to the user in the modal)
 
 
 bp = Blueprint("hancock", __name__)
@@ -65,23 +64,37 @@ def create_session():
     sid = make_sid(details)
     with open(f"/data/signatures/{sid}.json", "w") as fp:
         json.dump(details, fp)
+    h = hashlib.blake2b(digest_size=16)
+    h.update(sid.encode("utf8"))
+    h.update(os.environ["SECRET_KEY"].encode("utf8"))
+    h = h.hexdigest()
     comms.send_email(
         "signature_requested",
         details["signee_email"],
-        url=url_for("hancock.sign", sid=sid, _external=True, _scheme="https"),
+        url=url_for("hancock.sign", sid=sid, h=h, _external=True, _scheme="https"),
     )
     return jsonify({"status": 201, "data": {"sid": sid}}), 201
 
 
 @bp.route("/session/<sid>/", methods=["GET", "POST"])
+@security.requires_csrf
 def sign(sid):
+    h_inc = request.args.get("h", "")
+
+    h_cmp = hashlib.blake2b(digest_size=16)
+    h_cmp.update(sid.encode("utf8"))
+    h_cmp.update(os.environ["SECRET_KEY"].encode("utf8"))
+    h_cmp = h_cmp.hexdigest()
+
+    if h_inc != h_cmp:
+        return redirect(url_for("hancock.error"))
+
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
     if details["signed_on"]:
         # TODO: This needs to redirect to an HTML page that shows the signature.
         return redirect(url_for("hancock.get_signature", sid=sid))
     if request.method == "POST":
-        # TODO: Check CSRF token
         with open(f"/data/signatures/{sid}.svg", "w") as fp:
             fp.write(request.form["signature"])
         with open(f"/data/signatures/{sid}.json", "w") as fp:
@@ -123,6 +136,11 @@ def get_details(sid):
     if details["signed_on"]:
         details["status"] = "SIGNED"
     return jsonify({"data": details})
+
+
+@bp.route("/error/", methods=["GET"])
+def error():
+    return render_template("error.html")
 
 
 def get_font(name, chars=None):
