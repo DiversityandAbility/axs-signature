@@ -1,10 +1,41 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h1>Signature</h1>
-    <p></p>
-    {% if details.status == "SIGNED" %}
-        <img src="{{ url_for('hancock.get_signature_svg', sid=sid) }}" alt="A signature">
+<h1 class="text-center text-xl italic py-2"> Your Signature</h1>
+{% if details.status == "SIGNED" %}
+<div class="p-4 md:py-6 md:px-14 my-4 md:mx-8 border-2 md:border-8 border-bordercol bg-textbg rounded-lg mx-auto">
+    <h2 class="text-xl text-center">Summary</h2>
+    <div class="w-full text-center p-2 md:border-4 border-slate">
+        <div class="inline-flex items-center">
+            <h3 class="pr-2">Declaration Title: </h3>
+            <p>{{ details.title }}</p>
+        </div>
+        <div class="inline-flex items-center py-2">
+            <h3 class="pr-2">Created by</h3>
+            <p>{{ details.created_by }} on <script>
+                let d = new Date({{ details.created_on }} * 1000);
+                document.write(d.toLocaleString());
+            </script></p>
+        </div>
+        <div class="inline-flex items-center">
+            <h3 class="pr-2">Date signed</h3>
+            <p><script>
+                let ds = new Date({{ details.signed_on }} * 1000);
+                document.write(ds.toLocaleString());
+            </script></p>
+        </div>
+        <div class="inline-flex items-center pt-4">
+            <p class="text-left">{{ details.declaration }}</p>
+        </div>
+    </div>
+    <div class="py-4">
+        <p>Signature submitted:</p>
+        <div class="flex justify-center mx-auto pb-2 my-2 w-[100%]">
+            <img src="{{ url_for('hancock.get_signature_svg', sid=sid) }}" alt="A signature">
+        </div>
+    </div>
+    
+</div>        
     {% else %}
         <p>The signature has not been submitted yet</p>
     {% endif %}
