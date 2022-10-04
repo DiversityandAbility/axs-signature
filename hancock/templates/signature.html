@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>Signature</h1>
+    <p></p>
+    {% if details.status == "SIGNED" %}
+        <img src="{{ url_for('hancock.get_signature_svg', sid=sid) }}" alt="A signature">
+    {% else %}
+        <p>The signature has not been submitted yet</p>
+    {% endif %}
+{% endblock %}

@@ -119,25 +119,7 @@ def sign(sid):
     )
 
 
-@bp.route("/session/<sid>/close/", methods=["GET"])
-def session_close(sid):
-    with open(f"/data/signatures/{sid}.json", "r") as fp:
-        details = json.load(fp)
-    return render_template("close.html", redirect_uri=details["redirect_uri"])
-
-
-@bp.route("/signature/<sid>.svg", methods=["GET"])
-def get_signature(sid):
-    # TODO: colour signature according to query string params?
-    return send_from_directory(
-        "/data/signatures/",
-        f"{sid}.svg",
-        as_attachment=False,
-    )
-
-
-@bp.route("/signature/<sid>.json", methods=["GET"])
-def get_details(sid):
+def get_safe_details(sid):
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
     safe_details = {
@@ -149,7 +131,28 @@ def get_details(sid):
     }
     if details["signed_on"]:
         safe_details["status"] = "SIGNED"
-    return jsonify({"data": safe_details})
+    return safe_details
+
+
+@bp.route("/signature/<sid>/", methods=["GET"])
+def get_signature(sid):
+    details = get_safe_details(sid)
+    return render_template("signature.html", sid=sid, details=details)
+
+
+@bp.route("/signature/<sid>.svg", methods=["GET"])
+def get_signature_svg(sid):
+    # TODO: colour signature according to query string params?
+    return send_from_directory(
+        "/data/signatures/",
+        f"{sid}.svg",
+        as_attachment=False,
+    )
+
+
+@bp.route("/signature/<sid>.json", methods=["GET"])
+def get_signature_details(sid):
+    return jsonify({"data": get_safe_details(sid)})
 
 
 @bp.route("/error/", methods=["GET"])
@@ -188,7 +191,7 @@ def get_font(name, chars=None):
 
 @bp.route("/subset/", methods=["GET"])
 def subset_font():
-    # TODO: Auth this route somehow, so people can't just use it as a subsetting tool
+    # TODO: Auth this route somehow, so people can't just use it as a subsetting tool?
     font_name = request.args.get("font", "calligraffiti")
     font_name = secure_filename(font_name)
     chars = request.args.get("chars", None)

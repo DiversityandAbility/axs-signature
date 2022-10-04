@@ -1,6 +1,5 @@
 import os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from flask import render_template, current_app
 from flask_mail import Mail as FlaskMail, Message
 
 mail = FlaskMail()
