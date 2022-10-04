@@ -53,6 +53,14 @@ def check_key(key):
     return {"name": "Demo Organisation"}
 
 
+def check_hash(sid, hash):
+    h_cmp = hashlib.blake2b(digest_size=16)
+    h_cmp.update(sid.encode("utf8"))
+    h_cmp.update(os.environ["SECRET_KEY"].encode("utf8"))
+    h_cmp = h_cmp.hexdigest()
+    return hash == h_cmp
+
+
 @bp.route("/session/", methods=["POST"])
 @cross_origin()
 def create_session():
@@ -72,8 +80,15 @@ def create_session():
     h = h.hexdigest()
     comms.send_email(
         "signature_requested",
+        f"Your signature is needed on '{details['title']}'",
         details["signee_email"],
-        url=url_for("hancock.sign", sid=sid, h=h, _external=True, _scheme="https"),
+        url=url_for(
+            "hancock.sign",
+            sid=sid,
+            h=h,
+            _external=True,
+            _scheme="https",
+        ),
     )
     return jsonify({"status": 201, "data": {"sid": sid}}), 201
 
@@ -81,14 +96,7 @@ def create_session():
 @bp.route("/session/<sid>/", methods=["GET", "POST"])
 @security.requires_csrf
 def sign(sid):
-    h_inc = request.args.get("h", "")
-
-    h_cmp = hashlib.blake2b(digest_size=16)
-    h_cmp.update(sid.encode("utf8"))
-    h_cmp.update(os.environ["SECRET_KEY"].encode("utf8"))
-    h_cmp = h_cmp.hexdigest()
-
-    if h_inc != h_cmp:
+    if not check_hash(sid, request.args.get("h", "")):
         return redirect(url_for("hancock.error"))
 
     with open(f"/data/signatures/{sid}.json", "r") as fp:
@@ -120,7 +128,6 @@ def session_close(sid):
 
 @bp.route("/signature/<sid>.svg", methods=["GET"])
 def get_signature(sid):
-    # TODO: verify hash in query string
     # TODO: colour signature according to query string params?
     return send_from_directory(
         "/data/signatures/",
@@ -133,10 +140,16 @@ def get_signature(sid):
 def get_details(sid):
     with open(f"/data/signatures/{sid}.json", "r") as fp:
         details = json.load(fp)
-    details["status"] = "PENDING"
+    safe_details = {
+        "status": "PENDING",
+        "title": details["title"],
+        "declaration": details["declaration"],
+        "created_on": details["created_on"],
+        "signed_on": details["signed_on"],
+    }
     if details["signed_on"]:
-        details["status"] = "SIGNED"
-    return jsonify({"data": details})
+        safe_details["status"] = "SIGNED"
+    return jsonify({"data": safe_details})
 
 
 @bp.route("/error/", methods=["GET"])
