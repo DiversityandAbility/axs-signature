@@ -127,6 +127,7 @@ def get_safe_details(sid):
         "title": details["title"],
         "declaration": details["declaration"],
         "created_on": details["created_on"],
+        "created_by": details["created_by"],
         "signed_on": details["signed_on"],
     }
     if details["signed_on"]:
