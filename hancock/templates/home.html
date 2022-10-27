@@ -1,29 +1,41 @@
 {% extends "base.html" %}
 
-{% block body %}
+{% block extra_head %}
     <script src="{{ url_for('static', filename='signature.js') }}"></script>
+{% endblock %}
 
-    <div class="p-4 md:py-6 md:px-14 my-4 md:mx-8 border-2 md:border-8 border-bordercol bg-textbg rounded-lg">
-        <p class="p-2 text-lg md:text-base">AXS Signature is an open source service that makes it easy for you to request electronic signatures from your users.</p>
-        <p class="p-2 text-lg md:text-base">It's designed to be easy to use (for you and your users); accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>    
-    
-        <h2 class="p-2 text-2xl md:text-lg font-bold">Try it!</h2>
-        <p class="p-2 text-lg md:text-base">Fill in this form to create a "signature session", hopefully it's simple enough to just start using, but if you want to learn more, <a href="/docs/" class="font-semibold text-hyperlinkcolour hover:text-sky-600 hover:shadow-xl underline">read our documentation</a>.</p>
+{% block body %}
+    <h1 class="text-3xl mb-4">Welcome to AXS Signature</h1>
+    <p class="text-lg mb-4">AXS Signature is a free and open source service that makes it easy for you to request electronic signatures from your users.</p>
+    <p class="text-lg mb-4">It's designed to be: easy to use, for you and your users; accessible, so everyone can use it; and secure, so you know you can trust and verify the signatures.</p>
+
+    <h2 class="text-2xl mb-4">Try it!</h2>
+    <div class="try-it">
+        <p class="text-lg mb-4">Pop your email address in the box below, click the button, and you're off! If you want to learn more, <a href="/docs/">read our documentation</a>.</p>
         <form id="request-form">
-            <div class="block p-3 my-4 md:border-4 border-slate">
-                <label for="signee_email" class="block font-bold uppercase text-xl md:text-base">Your Email:</label>
-                <input type="email" id="signee_email" name="signee_email" class="focus:shadow-xl h-12 md:h-14 text-2xl md:text-base focus:border-blue-500 appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none w-full" required >
+            <div class="flex flex-row items-end gap-2">
+                <div class="grow">
+                    <label for="signee_email" class="">Your Email</label>
+                    <input type="email" id="signee_email" name="signee_email" class="focus:border-dahyperblue appearance-none rounded border-2 py-2 px-3 focus:outline-none w-full" required placeholder="e.g. john.smith@example.com">
+                </div>
+                <div class="">
+                    <button class="rounded text-white uppercase pl-4 pr-4 py-2 cursor-pointer border-b-4 border-black bg-dahyperblue hover:bg-dadarkblue text-xl">
+                        <i class="mr-1 fal fa-fw fa-signature"></i>
+                        Sign Here
+                    </button>
+                </div>
             </div>
-            <div class="flex justify-center py-2">
-                <input type="submit" value="Sign Here" class="rounded text-white font-['Oswald'] font-extrabold tracking-widest uppercase p-4 border-b-4 border-bordercol bg-[#00856C] hover:bg-[#005C4B] text-xl md:text-base">
-            </div>  
         </form>
-        <div class="signature hidden flex justify-center mx-auto pb-2 my-2 w-[100%]">
-            <h3>Your Signature:</h3>
-            <img src="" alt="">
-
+    </div>
+    <div class="signature hidden">
+        <p class="text-lg mb-4">Here's your signature, ready to be embedded in a document!</p>
+        <div class="text-center">
+            <object type="image/svg+xml" data="" class="inline"></object>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_body %}
     <script>
         (() => {
             let form = document.getElementById("request-form");
@@ -39,9 +51,9 @@
                         signee_email: document.getElementById("signee_email").value,
                     }
                 );
-                document.querySelector(".signature img").setAttribute("src", imageUrl);
+                document.querySelector(".signature object").setAttribute("data", imageUrl);
                 document.querySelector(".signature").classList.toggle("hidden");
-                document.querySelector("#request-form").classList.toggle("hidden");
+                document.querySelector(".try-it").classList.toggle("hidden");
                 return false;
             });
         })();

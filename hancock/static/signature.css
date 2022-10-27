@@ -4,7 +4,7 @@ body.axs-modal-open {
 .axs-modal-underlay {
     --axs-underlay-bg-color: rgba(0,0,0,0.3);
     --axs-modal-bg-color: rgb(233, 237, 240);
-    --axs-modal-border: 8px solid #373554;
+    --axs-modal-border: 4px solid #373554;
     --axs-modal-border-radius: 5px;
     --axs-logo-fill-left: #373554;
     --axs-logo-fill-right: #474AF5;
