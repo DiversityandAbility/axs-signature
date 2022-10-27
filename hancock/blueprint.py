@@ -115,7 +115,8 @@ def sign(sid):
         "sign.html",
         sid=sid,
         details=details,
-        font=get_font("calligraffiti"),
+        cursivefont=get_font("cursive"),
+        monofont=get_font("monospace", chars="1234567890:/,qwertyuiopasdfghjklzxcvbnm"),
     )
 
 
@@ -193,7 +194,7 @@ def get_font(name, chars=None):
 @bp.route("/subset/", methods=["GET"])
 def subset_font():
     # TODO: Auth this route somehow, so people can't just use it as a subsetting tool?
-    font_name = request.args.get("font", "calligraffiti")
+    font_name = request.args.get("font", "cursive")
     font_name = secure_filename(font_name)
     chars = request.args.get("chars", None)
     return jsonify({"status": 200, "data": get_font(font_name, chars)})

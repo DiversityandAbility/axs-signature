@@ -33,14 +33,14 @@
         
         <div class="w-[350px] mx-auto">
           <label class="" for="name">Your name</label>
-          <input class="focus:border-dahyperblue appearance-none rounded border-2 py-2 px-3 focus:outline-none w-full" type="text" placeholder="e.g. JSmith" id="name" required />
+          <input class="focus:border-dahyperblue appearance-none rounded border-2 py-2 px-3 focus:outline-none w-full" type="text" placeholder="e.g. JSmith" id="name" required autocomplete="off"/>
         </div>
 
         <div class="text-center my-2">
           <i class="far fa-arrow-down fa-2x mx-auto"></i>
         </div>
                 
-        <div id="signature" class="flex justify-center pb-2 my-2 w-full"></div>
+        <div class="text-center"><div id="signature" class="bg-white inline-block"></div></div>
         <div class="text-center py-4">
             <button type="submit" class="rounded text-white uppercase pl-4 pr-4 py-2 border-b-4 border-black bg-dahyperblue hover:bg-dadarkblue text-xl">
               <i class="far fa-check-double mr-1"></i>
@@ -53,85 +53,43 @@
 {% block extra_body %}
 <script>
   (function() {
-    const signatureWidth = 350;
-    const signatureHeight = 120;
     let input = document.querySelector('#name');
-    let draw = SVG().addTo('#signature').size(signatureWidth, signatureHeight);
+    let draw = SVG().addTo('#signature').size(350, 80);
 
-    let scale_ = 1.0;
-    let textSize_ = 16 * scale_;
-    let bg_rect = draw.rect(draw.width(), draw.height()).fill('#ffff');
-
-    let logoW = 40;
-    let logoH  = 20;
-    if (visualViewport.width < 600 ){
-      scale_ = 0.8;
-      let mobWidth = signatureWidth * 0.8;
-      let mobHeight = signatureHeight * 0.8;
-      draw.size(mobWidth, mobHeight);
-    }
-    visualViewport.addEventListener('resize', function() {
-      if (window.innerWidth < 600 ) {
-        scale_ = 0.8;
-      } else {
-        scale_ = 1.0;
-      }
-      textSize_ = 16 * scale_;
-      draw.size(signatureWidth * scale_, signatureHeight * scale_);
-      
-      text.move(draw.width/2, draw.height * 0.6);
-      text.center(draw.width()/2, draw.height()*0.6);
-      
-      datetime.move(draw.width()* 0.5, draw.height()*0.).font({ "font-size": textSize_, "fill": "#484848", opacity: 0.2 });
-      
-      hash.move(draw.width() * 0.02, draw.height()*0.85).font({ "font-size": textSize_, "fill": "#484848" });
-      
-      logo.size(logoW * scale_, logoH * scale_);
-    });
+    let cursiveFontface = draw.fontface('hancock-cursive', 'url(data:application/font-woff;charset=utf-8;base64,{{ cursivefont["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
+    let monospaceFontface = draw.fontface('hancock-monospace', 'url(data:application/font-woff;charset=utf-8;base64,{{ monofont["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
     
-    draw.center(0,0);
-
-    let fontface = draw.fontface('hancock-cursive', 'url(data:application/font-woff;charset=utf-8;base64,{{ font["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
-    
-    let text = draw.text(function(add) {
-      add.tspan(input.value);
-    });
-
-    text.move(draw.width() * 0.5, draw.height() * 0.6);
+    let text = draw.text("");
     text.font({
-      family:   'hancock-cursive',
-      size:     32, 
-      anchor:   'middle',
-      leading:  '1.5em'
+      family: 'hancock-cursive',
+      size: 32,
     });
 
     input.addEventListener('keyup', updateText);
     function updateText() {
         text.clear();
         text.plain(input.value);
+        let w = Math.max(350, text.length() + 20);
+        draw.width(w);
+        updateDatetime();
+        text.move(draw.width() * 0.5 - text.length() * 0.5, draw.height() * 0.5 - 25);
     }
 
-    let datetime = draw.text(function(add) {
-      add.tspan(new Date().toLocaleString());
-    });
-
-
-    datetime.move(draw.width()* 0.56, draw.height() * 0.0).font({ "font-size": textSize_, "fill": "#484848", opacity: 0.2 });
-    datetime.width = draw.width();
+    let datetime = draw.text("");
+    datetime.font({ size: 14, family: "hancock-monospace", opacity: 0.5 });
     function updateDatetime() {
       let timestamp = new Date().toLocaleString();
       timestamp = timestamp.slice(0, -3);
       datetime.clear();
       datetime.plain(timestamp);
+      datetime.move(draw.width() - datetime.length() - 2, 0);
     }
     updateDatetime();
     setInterval(updateDatetime, 1000);
 
-    let hash = draw.text(function(add) {
-      add.tspan("{{ sid }}");
-    });
-    hash.move(draw.width() * 0.02, draw.height()*0.85).font({ "font-size": textSize_, "fill": "#484848", opacity: 0.2});
-    hash.fill(50);
+    let hash = draw.text("{{ sid }}");
+    hash.move(2, draw.height() - 18);
+    hash.font({ size: 14, family: "hancock-monospace", opacity: 0.5});
     
     let logo = SVG(`<svg viewBox="0 0 111.91406 39.300781" version="1.2" id="svg2383" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
       <defs id="defs2360">
@@ -170,11 +128,12 @@
           </g>
         </g>
       </g>
-    </svg>`).size(logoW, logoH);
-    logo.style('.fill-primary1', {fill: '#585858', opacity: '90%'});
-    logo.style('.fill-text1', {fill: '#888888', opacity: '90%'});
+    </svg>`)
+    logo.size(40, 20);
+    logo.style('.fill-primary1', { opacity: 0.8 });
+    logo.style('.fill-text1', { opacity: 0.8 });
     draw.add(logo);
-    logo.move(draw.width() * 0.02, draw.height() * 0.02);
+    logo.move(2, 2);
 
     let form = document.getElementById("signature-form");
     form.addEventListener("submit", (evt) => {
@@ -185,7 +144,7 @@
       let req = fetch(url);
       req = req.then(resp => resp.json());
       req.then(font => {
-        fontface.remove();
+        cursiveFontface.remove();
         draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.data.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
         form.querySelector("[name=signature]").value = draw.svg();
         form.submit();
