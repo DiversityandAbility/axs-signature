@@ -63,7 +63,7 @@
 
         let modal = document.createElement("div");
         modal.classList.add("axs-modal-underlay")
-        modal.innerHTML = `<div class="axs-modal">
+        modal.innerHTML = `<div class="axs-modal" role="dialog" aria-modal="true" aria-labelledby="#axs-modal-label">
             <div class="axs-modal-heading">
                 <svg viewBox="0 0 111.91406 39.300781" version="1.2" width="100px" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
                     <title>The AXS logo</title>
@@ -97,7 +97,7 @@
                         </g>
                     </g>
                 </svg>
-                <h2><span class="sr-only">AXS</span> Signature</h2>
+                <h2 tabindex="-1"><span class="sr-only">AXS</span> Signature</h2>
                 <button aria-label="Close" type="button" class="axs-modal-close-button">
                     <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16">
                         <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
@@ -105,6 +105,7 @@
                 </button>
             </div>
             <div class="axs-modal-body">
+                <p id="axs-modal-label" class="sr-only">Instructions on the next steps needed to sign the document.</p>
                 <p>We've sent an email to <strong>${signeeEmail}</strong>, check your inbox for a secure link.</p>
                 <div class="axs-modal-loading"><div></div><div></div><div></div><div></div></div>
                 <p>Your unique session ID is</p>
