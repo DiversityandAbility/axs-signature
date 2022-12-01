@@ -39,13 +39,13 @@
         
         <h2 class="uppercase text-xl font-bold my-4">Signed</h2>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-rows-2 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2 justify-between">
                 <p>By William Mayor</p>
                 <p>on behalf of <strong class="font-bold">[AXS Signature]</strong>.</p>
                 <div class="border border-black border-2 p-1"><a href="/signature/7471f16f0291807ede31b5cb30c962ed/"><object data="/signature/7471f16f0291807ede31b5cb30c962ed.svg" type="image/svg+xml" class="w-full pointer-events-none"></object></a></div>
             </div>
-            <div class="text-right flex flex-col gap-2 justify-between">
+            <div class="md:text-right flex flex-col gap-2 justify-between">
                 <p>By <strong class="font-bold">[<span class="name">{{ name or 'the undersigned' }}</span>]</strong>.</p>
                 <form id="form" action=""><button class="px-2 py-1 rounded bg-blue-800 text-white disabled:bg-slate-600" {% if not email %}disabled{% endif %}>Click to sign</button></form>
                 <div class="signature hidden border border-black border-2 p-1"><a href=""><object data="" type="image/svg+xml" class="w-full pointer-events-none"></object></a></div>
