@@ -147,6 +147,8 @@
       req.then(font => {
         cursiveFontface.remove();
         draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.data.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
+        draw.element('title').words("A signature showing the letters " + input.value.split("").join(", "));
+        draw.element('desc').words("This signature was made using a service called AXS Signature, their logo is in the top left corner of the image. In the top right corner is the date that the signature was created: " + datetime.text() + ". Along the bottom of the image is a unique session ID that can be used to check and verify the signature: {{ sid }}.");
         form.querySelector("[name=signature]").value = draw.svg();
         form.submit();
       })
