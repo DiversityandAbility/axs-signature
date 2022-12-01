@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h1 class="text-center text-2xl my-2">Signature</h1>
+    <h1 class="mb-8">Signature</h1>
     {% if details.status == "SIGNED" %}
         <div class="">
             <div class="bg-white border border-black pt-2 pb-1 px-2 rounded">
-                <h2 class="text-xl mb-2">{{ details.title }}</h2>
+                <h2 class="border-0">{{ details.title }}</h2>
                 <p class="">{{ details.declaration }}</p>
                 <p class="text-right mt-2">
                     <a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">
@@ -15,7 +15,7 @@
                 </p>
             </div>
             <div class="bg-white border border-black mt-2 p-2 rounded inline-block">
-                <object type="image/svg+xml" data="{{ url_for('hancock.get_signature_svg', sid=sid) }}"></object>
+                <object type="image/svg+xml" data="{{ url_for('hancock.get_signature_svg', sid=sid) }}" class="w-full"></object>
             </div>
             <div class="">
                 <p>Signature requested by <strong>{{ details.created_by }}</strong> on <span data-ts="{{ details.created_on * 1000}}"></span></p>

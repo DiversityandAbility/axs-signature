@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <title>{% block title %}Easy and Accessible Electronic Signatures{% endblock %} | AXS Signature</title>
-        <script src="https://kit.fontawesome.com/4e575ce405.js" crossorigin="anonymous"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700&family=Readex+Pro:wght@300;400&display=swap" rel="stylesheet"> 
@@ -15,9 +14,9 @@
                 theme: {
                     extend: {
                         colors: {
-                            primary: '#00856C',
-                            text: 'black',
-                            bg: 'white',
+                            primary: '#008068',
+                            text: '#1f1f38',
+                            bg: '#f4f4e5',
                         },
                         borderColor: {
                             DEFAULT: "text"
@@ -28,6 +27,12 @@
         </script>
         <style type="text/tailwindcss">
             @layer utilities {
+                h1 {
+                    @apply text-2xl border-b-4 border-primary pb-1 mb-2
+                }
+                h2 {
+                    @apply text-xl border-b-2 border-primary pb-1 mb-2
+                }
                 a {
                     @apply text-primary hover:underline;
                 }
@@ -48,10 +53,10 @@
                 font-family: 'Baloo Bhaijaan 2', cursive;
             }
             svg.axs-logo .fill-text, svg.dna-logo .logoPath {
-                fill: black;
+                fill: #1f1f38;
             }
             svg.axs-logo .fill-primary {
-                fill: #00856C;
+                fill: #008068;
             }
         </style>
         {% block extra_head %}{% endblock %}
@@ -152,7 +157,7 @@
                     </nav>
                 </div>
             </header>
-            <main id="main" class="grow max-w-2xl mx-auto">
+            <main id="main" class="grow max-w-2xl mx-auto mt-4">
                 {% block body %}{% endblock %}
             </main>
             <footer class="flex flex-col gap-2 items-center pb-2 border-t pt-2 mt-2">
@@ -167,11 +172,11 @@
                 <nav>
                     <ul class="flex flex-col md:flex-row gap-2 text-sm items-center">
                         <li>
-                            <a href='/terms/'>Terms and Conditions</a>
+                            <a href='{{ url_for("hancock.terms") }}'>Terms &amp; Conditions</a>
                         </li>
                         <li class="hidden md:block">&middot;</li>
                         <li>
-                            <a href='/privacy/'>Privacy Notice</a>
+                            <a href='{{ url_for("hancock.privacy") }}'>Privacy Notice</a>
                         </li>
                     </ul>
                 </nav>

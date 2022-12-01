@@ -1,8 +1,6 @@
 (() => {
-    window.AXSSignature = async (apiBase, apiKey, details) => {
-        let sid = localStorage.getItem("axs-signature-sid");
-
-        if (sid === null) {
+    window.AXSSignature = {
+        create: async (apiBase, apiKey, details) => {
             let url = new URL("/session/", apiBase);
             let resp = await fetch(url, {
                 method: "POST",
@@ -13,34 +11,48 @@
                 body: JSON.stringify(details)
             });
             resp = await resp.json();
-            sid = resp.data.sid;
-            localStorage.setItem("axs-signature-sid", sid);
-        }
-
-        showModal(apiBase, details.signee_email, sid);
-
-        if (!window.__AXSSisgnaturePromise) {
-            window.__AXSSisgnaturePromise = new Promise((resolve, reject) => {
-                let interval = setInterval(() => {
-                    let url = new URL(`/signature/${sid}.json`, apiBase);
-                    let req = fetch(url, {
-                        method: "GET",
-                        headers: { "X-Api-Key": apiKey }
-                    });
-                    req = req.then(resp => resp.json());
-                    req.then(json => {
+            return resp.data.sid;
+        },
+        show: (apiBase, apiKey, signeeEmail, sessionId) => {
+            if (!window.__AXSSisgnaturePromise) {
+                window.__AXSSisgnaturePromise = new Promise((resolve, reject) => {
+                    checkSignature(apiBase, apiKey, sessionId).then(json => {
                         if (json.data.status === "SIGNED") {
-                            clearInterval(interval);
-                            localStorage.removeItem("axs-signature-sid");
+                            resolve({
+                                url: `${apiBase}/signature/${sessionId}/`,
+                                imageUrl: `${apiBase}/signature/${sessionId}.svg`
+                            });
                             delete window.__AXSSisgnaturePromise;
-                            closeModal();
-                            resolve(`${apiBase}/signature/${sid}.svg`);
+                        } else {
+                            showModal(apiBase, signeeEmail, sessionId);
+                            let interval = setInterval(() => {
+                                checkSignature(apiBase, apiKey, sessionId).then(json => {
+                                    if (json.data.status === "SIGNED") {
+                                        clearInterval(interval);
+                                        closeModal();
+                                        resolve({
+                                            url: `${apiBase}/signature/${sessionId}/`,
+                                            imageUrl: `${apiBase}/signature/${sessionId}.svg`
+                                        });
+                                        delete window.__AXSSisgnaturePromise;
+                                    }
+                                });
+                            }, 5000);
                         }
                     });
-                }, 5000);
-            });
+                });
+            }
+            return window.__AXSSisgnaturePromise;
         }
-        return window.__AXSSisgnaturePromise;
+    }
+
+    const checkSignature = (apiBase, apiKey, sessionId) => {
+        let url = new URL(`/signature/${sessionId}.json`, apiBase);
+        let req = fetch(url, {
+            method: "GET",
+            headers: { "X-Api-Key": apiKey }
+        });
+        return req.then(resp => resp.json());
     }
 
     const showModal = (apiBase, signeeEmail, sessionId) => {
@@ -98,7 +110,7 @@
                 <p>Your unique session ID is</p>
                 <p class="session-id"><strong>${sessionId}</strong></p>
                 <p>You can use this to check that you're signing the right document.</p>
-                <p class="smallprint"><small><a target="_blank" href='${apiBase}/about/'>What is AXS Signature?</a> &middot; <a target="_blank" href='${apiBase}/terms/'>Terms and Conditions</a> &middot; <a target="_blank" href='${apiBase}/privacy/'>Privacy Notice</a>
+                <p class="smallprint"><small><a target="_blank" href='${apiBase}'>What is AXS Signature?</a> &middot; <a target="_blank" href='${apiBase}/terms/'>Terms and Conditions</a> &middot; <a target="_blank" href='${apiBase}/privacy/'>Privacy Notice</a>
             </div>
         </div>`;
 

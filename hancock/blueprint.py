@@ -1,4 +1,3 @@
-from audioop import cross
 import base64
 import hashlib
 import json
@@ -31,9 +30,29 @@ bp = Blueprint("hancock", __name__)
 
 @bp.route("/", methods=["GET"])
 def home():
-    """A really simple introduction page, with a form that you can use to
-    create a signature session to test things out."""
     return render_template("home.html")
+
+
+@bp.route("/demo/", methods=["GET"])
+def demo():
+    return render_template(
+        "demo.html",
+        name=request.args.get("name", ""),
+        email=request.args.get("email", ""),
+        sessionId=request.args.get("sid", ""),
+    )
+
+
+@bp.route("/terms/", methods=["GET"])
+def terms():
+    return redirect(
+        "https://docs.google.com/document/d/1GR0nUVOlmumWpyXklfGeTs3DM4P9E4g4ekdDYvuQf88/edit?usp=sharing"
+    )
+
+
+@bp.route("/privacy/", methods=["GET"])
+def privacy():
+    return redirect("https://diversityandability.com/privacy-notice/")
 
 
 def make_sid(details):
@@ -48,7 +67,7 @@ def make_sid(details):
 def check_key(key):
     # TODO: Have an actual DB of API keys
     # TODO: Time limited API keys, connected to the signee_email, use once?
-    if key != "123":
+    if key != "rah8aeph5xate2reeNgohpeigoonot3ieteefiekequae2oozieghieThooghub4":
         abort(401)
     return {"name": "Demo Organisation"}
 

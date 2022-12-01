@@ -1,14 +1,18 @@
 body.axs-modal-open {
     overflow: hidden;
 }
+.axs-modal-underlay, .axs-modal-underlay::before, .axs-modal-underlay::after,
+.axs-modal-underlay *, .axs-modal-underlay *::before, .axs-modal-underlay *::after {
+    all: reset;
+}
 .axs-modal-underlay {
     --axs-underlay-bg-color: rgba(0,0,0,0.3);
-    --axs-modal-bg-color: rgb(233, 237, 240);
-    --axs-modal-border: 4px solid #373554;
+    --axs-modal-bg-color: #f4f4e5;
+    --axs-modal-border: 4px solid #1f1f38;
     --axs-modal-border-radius: 5px;
-    --axs-logo-fill-left: #373554;
-    --axs-logo-fill-right: #474AF5;
-    --axs-modal-text-color: #373554;
+    --axs-logo-fill-left: #1f1f38;
+    --axs-logo-fill-right: #008068;
+    --axs-modal-text-color: #1f1f38;
 }
 .axs-modal-underlay {
     position: fixed;

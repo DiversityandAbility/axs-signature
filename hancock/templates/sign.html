@@ -5,15 +5,19 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="text-center text-2xl my-2">Your Signature is Required</h1>
+    <h1 class="">Your Signature is Required</h1>
     <p class="py-5">Please review the details below. If you are happy, sign your name at the bottom of the page and click submit.</p>
+
+    <h2 class="text-xl mb-1">1. Check your session ID</h2>
+    <p class="mb-2">The document you are signing should show you your unique session ID. Check that it matches this one, if not you might be signing the wrong thing.</p>
+    <p class="mb-2 text-center monospace">{{ sid}}</p>
     
-    <h2 class="text-xl mb-1">1. Read the declaration</h2>
-    <p class="text-sm mb-2">This is what you're signing your name to. It's a summary of <a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">the full document</a>, which you should read too.</p>
-    <p class="text-sm mb-2">If you're not sure about something, or if something doesn't look right, you should get in touch with <strong>{{ details.created_by }}</strong>.</p>
+    <h2 class="text-xl mb-1">2. Read the declaration</h2>
+    <p class="mb-2">This is what you're signing your name to. It's a summary of <a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">the full document</a>, which you should read too.</p>
+    <p class="mb-2">If you're not sure about something, or if something doesn't look right, you should get in touch with <strong>{{ details.created_by }}</strong>.</p>
 
     <div class="bg-white border border-black pt-2 pb-1 px-2 rounded">
-        <h2 class="text-xl mb-2">{{ details.title }}</h2>
+        <h2 class="border-0">{{ details.title }}</h2>
         <p class="">{{ details.declaration }}</p>
         <p class="text-right mt-2">
           <a href="{{ details.redirect_uri }}" rel="noopener" target="_blank">
@@ -23,13 +27,13 @@
         </p>
     </div>
 
-    <h2 class="text-xl mt-4">2. Sign</h2>
+    <h2 class="mt-4">3. Sign</h2>
 
     <form id="signature-form" method="POST">
         <input type="hidden" name="signature" required>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-        <p class="text-sm mb-2">Type in the textbox below to add your signature.</p>
+        <p class="mb-2">Type in the textbox below to add your signature.</p>
         
         <div class="w-[350px] mx-auto">
           <label class="" for="name">Your name</label>
@@ -42,7 +46,7 @@
                 
         <div class="text-center"><div id="signature" class="bg-white inline-block"></div></div>
         <div class="text-center py-4">
-            <button type="submit" class="rounded text-white uppercase pl-4 pr-4 py-2 border-b-4 border-black bg-dahyperblue hover:bg-dadarkblue text-xl">
+            <button type="submit" class="btn">
               <i class="far fa-check-double mr-1"></i>
               Submit
             </button>
@@ -54,7 +58,7 @@
 <script>
   (function() {
     let input = document.querySelector('#name');
-    let draw = SVG().addTo('#signature').size(350, 80);
+    let draw = SVG().addTo('#signature').viewbox(0, 0, 350, 80).width(350).height(80);
 
     let cursiveFontface = draw.fontface('hancock-cursive', 'url(data:application/font-woff;charset=utf-8;base64,{{ cursivefont["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
     let monospaceFontface = draw.fontface('hancock-monospace', 'url(data:application/font-woff;charset=utf-8;base64,{{ monofont["base64"] }}) format("woff")', {'font-weight': 'normal', 'font-style': 'normal'});
@@ -69,9 +73,6 @@
     function updateText() {
         text.clear();
         text.plain(input.value);
-        let w = Math.max(350, text.length() + 20);
-        draw.width(w);
-        updateDatetime();
         text.move(draw.width() * 0.5 - text.length() * 0.5, draw.height() * 0.5 - 25);
     }
 

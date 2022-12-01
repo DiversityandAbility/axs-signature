@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block extra_head %}
-    <script src="{{ url_for('static', filename='signature.js') }}"></script>
-{% endblock %}
-
 {% block body %}
     <h1 class="text-3xl mb-4">Welcome to AXS Signature</h1>
     <p class="text-lg mb-4">AXS Signature is a free and open source service that makes it easy for organisations to request electronic signatures from users.</p>
@@ -18,32 +14,7 @@
     <div class="try-it">
         <p class="text-lg mb-4">We've created a demo site that shows how AXS Signature could be used to collect a signature on a contract.</p>
         <p class="text-center my-4">
-            <a href="/demo/" class="btn">Open the Demo</a>
+            <a href="/demo/" class="btn" target="_blank">Open the Demo</a>
         </p>
     </div>
-{% endblock %}
-
-{% block extra_body %}
-    <script>
-        (() => {
-            let form = document.getElementById("request-form");
-            form.addEventListener("submit", async evt => {
-                evt.preventDefault();
-                let imageUrl = await window.AXSSignature(
-                    window.location.origin,
-                    "123",
-                    {
-                        redirect_uri: "{{ request.url }}",
-                        title: "Demo Signature",
-                        declaration: "I'm testing out AXS Signature and I'm loving how easy it is to use!",
-                        signee_email: document.getElementById("signee_email").value,
-                    }
-                );
-                document.querySelector(".signature object").setAttribute("data", imageUrl);
-                document.querySelector(".signature").classList.toggle("hidden");
-                document.querySelector(".try-it").classList.toggle("hidden");
-                return false;
-            });
-        })();
-    </script>
 {% endblock %}
