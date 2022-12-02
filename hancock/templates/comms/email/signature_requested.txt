@@ -1,5 +1,12 @@
-TODO: Write this email template properly
+Your Signature is Needed
 
-You need to sign this:
+
+{{ org }} would like you to sign a document: {{ doc }}.
+
+If you weren't expecting this email, then you should either ignore it, or contact {{ org }} directly.
+
+If you were expecting this email, then open the link below to add your signature. It's really easy to do.
 
 {{ url }}
+
+This email was sent on behalf of {{ org }} by AXS Signature. Learn more about AXS Signature at https://axs-signature.co.

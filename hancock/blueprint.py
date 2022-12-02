@@ -7,6 +7,7 @@ import time
 
 from flask import (
     abort,
+    make_response,
     Blueprint,
     redirect,
     render_template,
@@ -53,6 +54,17 @@ def terms():
 @bp.route("/privacy/", methods=["GET"])
 def privacy():
     return redirect("https://diversityandability.com/privacy-notice/")
+
+
+@bp.route("/emails/<name_text>.txt")
+@bp.route("/emails/<name_html>/")
+def email_preview(name_html=None, name_text=None):
+    if name_html:
+        return render_template(f"comms/email/{name_html}.html", **request.args)
+    content = render_template(f"comms/email/{name_text}.txt", **request.args)
+    resp = make_response(content, 200)
+    resp.content_type = "text/plain"
+    return resp
 
 
 def make_sid(details):
@@ -108,6 +120,8 @@ def create_session():
             _external=True,
             _scheme="https",
         ),
+        org=details["created_by"],
+        doc=details["title"],
     )
     return jsonify({"status": 201, "data": {"sid": sid}}), 201
 

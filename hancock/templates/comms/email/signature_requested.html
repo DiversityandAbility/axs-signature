@@ -1,5 +1,16 @@
-TODO: Write this email template properly
-
-You need to sign this:
-
-{{ url }}
+<html>
+    <body>
+        <table style="width:100%; background-color: #f4f4e5; color: #1f1f38">
+            <tr>
+                <td style="padding: 20px; border-left: 8px solid #008068;">
+                    <h1 style="border-bottom: 2px solid #008068">Your Signature is Needed</h1>
+                    <p><strong>{{ org }}</strong> would like you to sign a document: <strong>{{ doc }}</strong>.</p>
+                    <p>If you weren't expecting this email, then you should either ignore it, or contact <strong>{{ org }}</strong> directly.</p>
+                    <p>If you were expecting this email, then click the link below to add your signature. It's really easy to do.</p>
+                    <p><a href="{{ url }}" style="background-color: #008068; color: #f4f4e5; border-radius: 5px; padding: 5px 10px; text-decoration: none;">Sign the document</a></p>
+                    <p style="margin-top: 20px; font-size: smaller">This email was sent on behalf of {{ org }} by AXS Signature. Learn more about AXS Signature on the <a href="https://axs-signature.co" style="color: #008068">AXS Signature website</a>.</p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
