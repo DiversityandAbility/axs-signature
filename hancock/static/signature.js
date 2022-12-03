@@ -14,33 +14,40 @@
             return resp.data.sid;
         },
         show: (apiBase, apiKey, signeeEmail, sessionId) => {
-            if (!window.__AXSSisgnaturePromise) {
-                window.__AXSSisgnaturePromise = new Promise((resolve, reject) => {
-                    checkSignature(apiBase, apiKey, sessionId).then(json => {
-                        if (json.data.status === "SIGNED") {
-                            resolve({
-                                url: `${apiBase}/signature/${sessionId}/`,
-                                imageUrl: `${apiBase}/signature/${sessionId}.svg`
+            if (!!window.__AXSSisgnaturePromise) {
+                window.__AXSSisgnaturePromise.cancel();
+            }
+            let interval;
+            window.__AXSSisgnaturePromise = new Promise((resolve, reject) => {
+                checkSignature(apiBase, apiKey, sessionId).then(json => {
+                    if (json.data.status === "SIGNED") {
+                        resolve({
+                            url: `${apiBase}/signature/${sessionId}/`,
+                            imageUrl: `${apiBase}/signature/${sessionId}.svg`
+                        });
+                        delete window.__AXSSisgnaturePromise;
+                    } else {
+                        showModal(apiBase, signeeEmail, sessionId);
+                        interval = setInterval(() => {
+                            checkSignature(apiBase, apiKey, sessionId).then(json => {
+                                if (json.data.status === "SIGNED") {
+                                    clearInterval(interval);
+                                    closeModal();
+                                    resolve({
+                                        url: `${apiBase}/signature/${sessionId}/`,
+                                        imageUrl: `${apiBase}/signature/${sessionId}.svg`
+                                    });
+                                    delete window.__AXSSisgnaturePromise;
+                                }
                             });
-                            delete window.__AXSSisgnaturePromise;
-                        } else {
-                            showModal(apiBase, signeeEmail, sessionId);
-                            let interval = setInterval(() => {
-                                checkSignature(apiBase, apiKey, sessionId).then(json => {
-                                    if (json.data.status === "SIGNED") {
-                                        clearInterval(interval);
-                                        closeModal();
-                                        resolve({
-                                            url: `${apiBase}/signature/${sessionId}/`,
-                                            imageUrl: `${apiBase}/signature/${sessionId}.svg`
-                                        });
-                                        delete window.__AXSSisgnaturePromise;
-                                    }
-                                });
-                            }, 5000);
-                        }
-                    });
+                        }, 5000);
+                    }
                 });
+            });
+            window.__AXSSisgnaturePromise.cancel = () => {
+                if (!!interval) {
+                    clearInterval(interval);
+                }
             }
             return window.__AXSSisgnaturePromise;
         }
