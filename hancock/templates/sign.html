@@ -8,8 +8,8 @@
     <h1 class="">Your Signature is Required</h1>
     <p class="py-5">Please review the details below. If you are happy, sign your name at the bottom of the page and click submit.</p>
 
-    <h2 class="text-xl mb-1">1. Check your session ID</h2>
-    <p class="mb-2">The document you are signing should show you your unique session ID. Check that it matches this one, if not you might be signing the wrong thing.</p>
+    <h2 class="text-xl mb-1">1. Check your signature ID</h2>
+    <p class="mb-2">The document you are signing should show you your unique signature ID. Check that it matches this one, if not you might be signing the wrong thing.</p>
     <p class="mb-2 text-center monospace">{{ sid}}</p>
     
     <h2 class="text-xl mb-1">2. Read the declaration</h2>
@@ -148,7 +148,7 @@
         cursiveFontface.remove();
         draw.fontface('hancock-cursive', `url(data:application/font-woff;charset=utf-8;base64,${font.data.base64}) format("woff")`, {'font-weight': 'normal', 'font-style': 'normal'});
         draw.element('title').words("A signature showing the letters " + input.value.split("").join(", "));
-        draw.element('desc').words("This signature was made using a service called AXS Signature, their logo is in the top left corner of the image. In the top right corner is the date that the signature was created: " + datetime.text() + ". Along the bottom of the image is a unique session ID that can be used to check and verify the signature: {{ sid }}.");
+        draw.element('desc').words("This signature was made using a service called AXS Signature, their logo is in the top left corner of the image. In the top right corner is the date that the signature was created: " + datetime.text() + ". Along the bottom of the image is a unique signature ID that can be used to check and verify the signature: {{ sid }}.");
         form.querySelector("[name=signature]").value = draw.svg();
         form.submit();
       })

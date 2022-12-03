@@ -115,7 +115,7 @@
                 <p id="axs-modal-label" class="sr-only">Instructions on the next steps needed to sign the document.</p>
                 <p>We've sent an email to <strong>${signeeEmail}</strong>, check your inbox for a secure link.</p>
                 <div class="axs-modal-loading"><div></div><div></div><div></div><div></div></div>
-                <p>Your unique session ID is</p>
+                <p>Your unique signature ID is</p>
                 <p class="session-id"><strong>${sessionId}</strong></p>
                 <p>You can use this to check that you're signing the right document.</p>
                 <p class="smallprint"><small><a target="_blank" href='${apiBase}'>What is AXS Signature?</a> &middot; <a target="_blank" href='${apiBase}/terms/'>Terms and Conditions</a> &middot; <a target="_blank" href='${apiBase}/privacy/'>Privacy Notice</a>
