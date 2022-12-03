@@ -71,6 +71,7 @@ def make_sid(details):
     h = hashlib.blake2b(digest_size=16)
     h.update(details["title"].encode("utf8"))
     h.update(details["declaration"].encode("utf8"))
+    h.update(details["redirect_uri"].encode("utf8"))
     h.update(details["signee_email"].encode("utf8"))
     h.update(str(details["created_on"]).encode("utf8"))
     return h.hexdigest()
@@ -103,6 +104,7 @@ def create_session():
     details["created_by"] = org["name"]
     details["signed_on"] = None
     sid = make_sid(details)
+    details["redirect_uri"] = details["redirect_uri"].replace("SID", sid)
     with open(f"/data/signatures/{sid}.json", "w") as fp:
         json.dump(details, fp)
     h = hashlib.blake2b(digest_size=16)

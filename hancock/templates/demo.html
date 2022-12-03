@@ -85,11 +85,13 @@
             let form = document.getElementById("form");
             form.addEventListener("submit", async evt => {
                 evt.preventDefault();
+                const redirectUri = new URL(document.location);
+                redirectUri.searchParams.set("sid", "SID");
                 const sessionId = await AXSSignature.create(
                     window.location.origin,
                     "rah8aeph5xate2reeNgohpeigoonot3ieteefiekequae2oozieghieThooghub4",
                     {
-                        redirect_uri: document.location.toString(),
+                        redirect_uri: redirectUri.toString(),
                         title: "Agreement on the use of exciting new demonstration",
                         declaration: "I agree with the terms set out in the 'Agreement on the use of exciting new demonstration' document.",
                         signee_email: document.getElementById("email").value,
